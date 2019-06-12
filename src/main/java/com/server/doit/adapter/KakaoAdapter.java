@@ -15,7 +15,6 @@ import com.server.doit.domain.dto.KakaoUserResponse;
 import com.server.doit.exception.ApiFailedException;
 
 import lombok.RequiredArgsConstructor;
-
 @Component
 @RequiredArgsConstructor
 public class KakaoAdapter {
