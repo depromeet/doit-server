@@ -18,4 +18,5 @@ public class Member {
 	//카카오 인증을 통해 발급받을 아이디
 	private String kakaoId;
 	private String name;
+	private String profileImgUrl;
 }
