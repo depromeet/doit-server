@@ -18,5 +18,5 @@ public class MemberController {
 	public Member login(@RequestBody LoginDto loginDto) {
 		Member loginedMember = memberService.getOrCreateMember(loginDto.getKakaoToken());
 		return loginedMember;
-	}
+	}	
 }
