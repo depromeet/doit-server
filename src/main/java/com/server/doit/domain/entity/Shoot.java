@@ -1,0 +1,31 @@
+package com.server.doit.domain.entity;
+
+import java.time.LocalDate;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import lombok.Data;
+
+@Entity
+@Data
+public class Shoot {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+    private Long sid;
+	private String shootName;
+	private LocalDate date;
+	private Integer likeCount;
+	@ManyToOne
+	@JoinColumn(name = "gid")
+	private Goal goal;
+	@OneToOne
+	@JoinColumn(name="checkId")
+	private ShootConfirm shootConfirm;
+	
+}
