@@ -9,10 +9,9 @@ import lombok.Data;
 
 @Entity
 @Data
-public class PenaltyCheckType {
+public class ProgressCheckType {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long pctId;
 	private String description; //설명
-	
 }

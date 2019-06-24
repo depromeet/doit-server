@@ -1,13 +1,11 @@
 package com.server.doit.controller.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
 @ToString
+@Builder
 @AllArgsConstructor
 public class GoalDto {
     private String name;
