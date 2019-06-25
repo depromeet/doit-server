@@ -9,25 +9,30 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
 public class Goal {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long gid;
-	private String goalName;
-	private String categorie;
-	private LocalDate stDate;
-	private LocalDate endDate;
-	private String themaColor;
-	private Integer penalty;
-	private Integer penaltyCheckCount;
-	private Boolean timerCheck;
-	
-	@OneToOne
-	@JoinColumn(name="pctId")
-	private PenaltyCheckType penaltyCheckType;
-	
+    private String goalName;
+    private String category;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private String themeColor;
+    private Integer penalty;
+    private Integer progressCheckCount;
+    private Boolean timerCheck;
+
+    @OneToOne
+    @JoinColumn(name = "pctId")
+    private ProgressCheckType progressCheckType;
+
+    public Goal() {}
 }
