@@ -33,7 +33,7 @@ public class GoalControllerTest {
         mockMvc.perform(post("/api/goal/create")
                 .contentType(MediaType.asMediaType(APPLICATION_JSON))
                 .content(objectMapper.writeValueAsString(
-                        new GoalDto("Goal1", "Cat1", 1519442460L, 1519442460L, 1, 1, 1, true, 3, "#992233"))))
+                        new GoalDto(1L, "Goal1", "Cat1", 1519442460L, 1519442460L, 1, 1, 1, true, 3, "#992233"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.goalName", is("Goal1")))
                 .andExpect(jsonPath("$.category", is("Cat1")))

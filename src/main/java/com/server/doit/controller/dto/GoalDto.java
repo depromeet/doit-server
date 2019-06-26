@@ -9,6 +9,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class GoalDto {
+    private Long mid;
     private String name;
     private String category;
     private Long startDate;
