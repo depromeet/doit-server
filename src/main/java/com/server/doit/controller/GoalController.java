@@ -1,9 +1,11 @@
 package com.server.doit.controller;
 
 import com.server.doit.controller.dto.GoalDto;
+import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.service.GoalService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +23,12 @@ public class GoalController {
 
     @PostMapping
     @RequestMapping(value = "/api/goal/create")
-    public ResponseWrapper<Object> createGoal(@RequestBody GoalDto goalDto) {
-        if (!goalDto.isValid()) return ResponseWrapper.builder().message("FAIL").build();
+    public ResponseEntity<Goal> createGoal(@RequestBody GoalDto goalDto) {
+        if (!goalDto.isValid()) return ResponseEntity.badRequest().body(null);
 
-        goalService.createGoal(goalDto);
+        Goal goal = goalService.createGoal(goalDto);
+        if (goal == null) return ResponseEntity.badRequest().body(null);
 
-        return ResponseWrapper.builder().message("SUCCESS").build();
+        return ResponseEntity.ok().body(goal);
     }
 }

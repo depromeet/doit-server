@@ -9,9 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 
 @Slf4j
 @Service
@@ -26,11 +24,15 @@ public class GoalService {
         this.progressCheckTypeRepository = progressCheckTypeRepository;
     }
 
-    public void createGoal(GoalDto goalDto) {
+    public Goal createGoal(GoalDto goalDto) {
         Goal goal = getGoal(goalDto);
 
-        if (goal == null) log.error("Fail to create goal");
-        else goalRepository.save(goal);
+        if (goal == null) {
+            log.error("Fail to create goal");
+            return null;
+        }
+
+        else return goalRepository.save(goal);
     }
 
     private Goal getGoal(GoalDto goalDto) {
@@ -44,8 +46,8 @@ public class GoalService {
         return Goal.builder()
                 .goalName(goalDto.getName())
                 .category(goalDto.getCategory())
-                .startDate(parseToLocalDate(goalDto.getStartDate()))
-                .endDate(parseToLocalDate(goalDto.getEndDate()))
+                .startDate(LocalDate.ofEpochDay(goalDto.getStartDate()))
+                .endDate(LocalDate.ofEpochDay(goalDto.getEndDate()))
                 .penalty(goalDto.getPenalty())
                 .progressCheckType(progressCheckType)
                 .progressCheckCount(goalDto.getProgressCount())
@@ -56,9 +58,5 @@ public class GoalService {
 
     private ProgressCheckType getProgressCheckType(int type) {
         return progressCheckTypeRepository.getOne((long) type);
-    }
-
-    private LocalDate parseToLocalDate(long time) {
-        return Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
     }
 }
