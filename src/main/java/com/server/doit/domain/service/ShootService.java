@@ -26,7 +26,6 @@ public class ShootService {
 				.shootName(shootDto.getShootName())
 				.goal(goal)
 				.build(); 
-		
 		shootRepository.save(shoot);
 		return shoot;
 	}	
