@@ -26,11 +26,15 @@ public class GoalService {
         this.progressCheckTypeRepository = progressCheckTypeRepository;
     }
 
-    public void createGoal(GoalDto goalDto) {
+    public Goal createGoal(GoalDto goalDto) {
         Goal goal = getGoal(goalDto);
 
-        if (goal == null) log.error("Fail to create goal");
-        else goalRepository.save(goal);
+        if (goal == null) {
+            log.error("Fail to create goal");
+            return null;
+        }
+
+        else return goalRepository.save(goal);
     }
 
     private Goal getGoal(GoalDto goalDto) {
@@ -59,6 +63,6 @@ public class GoalService {
     }
 
     private LocalDate parseToLocalDate(long time) {
-        return Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
+        return LocalDate.ofEpochDay(time);
     }
 }

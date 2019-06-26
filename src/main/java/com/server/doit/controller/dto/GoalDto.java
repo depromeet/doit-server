@@ -1,5 +1,6 @@
 package com.server.doit.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Getter
@@ -23,6 +24,7 @@ public class GoalDto {
         this.name = name;
     }
 
+    @JsonIgnore
     public boolean isValid() {
         return name != null && category != null && startDate != null && endDate != null && penalty != null
                 && progressType != null && progressCount != null && timerCheck != null && memberCount != null && color != null;

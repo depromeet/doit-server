@@ -33,9 +33,11 @@ public class GoalControllerTest {
         mockMvc.perform(post("/api/goal/create")
                 .contentType(MediaType.asMediaType(APPLICATION_JSON))
                 .content(objectMapper.writeValueAsString(
-                        new GoalDto("Goal1", "Cat1", 11L, 12L, 1, 1, 1, true, 3, "#992233"))))
+                        new GoalDto("Goal1", "Cat1", 1519442460L, 1519442460L, 1, 1, 1, true, 3, "#992233"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("SUCCESS")));
+                .andExpect(jsonPath("$.goalName", is("Goal1")))
+                .andExpect(jsonPath("$.category", is("Cat1")))
+                .andExpect(jsonPath("$.epochStartDate", is(1519442460)));
     }
 
     @Test
@@ -44,8 +46,6 @@ public class GoalControllerTest {
                 .contentType(MediaType.asMediaType(APPLICATION_JSON))
                 .content(objectMapper.writeValueAsString(
                         new GoalDto("Goal1"))))
-//                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.message", is("FAIL")));
+                .andExpect(status().is4xxClientError());
     }
-
 }
