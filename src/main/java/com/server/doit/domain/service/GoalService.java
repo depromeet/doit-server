@@ -7,8 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.server.doit.controller.dto.GoalDto;
 import com.server.doit.domain.entity.Goal;
+import com.server.doit.domain.entity.Member;
+import com.server.doit.domain.entity.Participant;
 import com.server.doit.domain.entity.ProgressCheckType;
 import com.server.doit.domain.repository.GoalRepository;
+import com.server.doit.domain.repository.MemberRepository;
+import com.server.doit.domain.repository.ParticipantRepository;
 import com.server.doit.domain.repository.ProgressCheckTypeRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +23,15 @@ public class GoalService {
 
     private final GoalRepository goalRepository;
     private final ProgressCheckTypeRepository progressCheckTypeRepository;
+    private final MemberRepository memberRepository;
+    private final ParticipantRepository participantRepository;
 
     @Autowired
-    public GoalService(GoalRepository goalRepository, ProgressCheckTypeRepository progressCheckTypeRepository) {
+    public GoalService(GoalRepository goalRepository, ProgressCheckTypeRepository progressCheckTypeRepository, MemberRepository memberRepository, ParticipantRepository participantRepository) {
         this.goalRepository = goalRepository;
         this.progressCheckTypeRepository = progressCheckTypeRepository;
+        this.memberRepository = memberRepository;
+        this.participantRepository = participantRepository;
     }
 
     public Goal createGoal(GoalDto goalDto) {
@@ -34,7 +42,23 @@ public class GoalService {
             return null;
         }
 
-        else return goalRepository.save(goal);
+        goal = goalRepository.save(goal);
+        Member member = memberRepository.getOne(goalDto.getMid());
+
+        Participant participant = Participant.builder()
+                .goal(goal)
+                .member(member)
+                .isHost(true)
+                .build();
+
+        if (participant == null) {
+            log.error("Fail to create participant");
+            return null;
+        }
+
+        participantRepository.save(participant);
+
+        return goal;
     }
 
     private Goal getGoal(GoalDto goalDto) {

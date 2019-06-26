@@ -7,8 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.server.doit.domain.entity.Member.MemberBuilder;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,4 +27,5 @@ public class Participant {
 	@ManyToOne
 	@JoinColumn(name = "gid")
 	private Goal goal;
+	private boolean isHost = false;
 }
