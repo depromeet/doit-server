@@ -1,7 +1,8 @@
 package com.server.doit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.server.doit.controller.dto.GoalDto;
+import com.server.doit.domain.dto.GoalDto;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

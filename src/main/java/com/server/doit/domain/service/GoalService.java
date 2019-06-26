@@ -1,15 +1,17 @@
 package com.server.doit.domain.service;
 
+import java.time.LocalDate;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.server.doit.controller.dto.GoalDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.entity.ProgressCheckType;
 import com.server.doit.domain.repository.GoalRepository;
 import com.server.doit.domain.repository.ProgressCheckTypeRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
