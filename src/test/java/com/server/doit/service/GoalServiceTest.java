@@ -1,17 +1,16 @@
 package com.server.doit.service;
 
-import com.server.doit.domain.dto.GoalDto;
-import com.server.doit.domain.entity.Goal;
-import com.server.doit.domain.repository.GoalRepository;
-import com.server.doit.domain.service.GoalService;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
-import static org.assertj.core.api.Assertions.assertThat;
+import com.server.doit.controller.dto.GoalDto;
+import com.server.doit.domain.repository.GoalRepository;
+import com.server.doit.domain.service.GoalService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
