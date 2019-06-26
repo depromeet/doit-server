@@ -7,10 +7,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Participant {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,4 +27,5 @@ public class Participant {
 	@ManyToOne
 	@JoinColumn(name = "gid")
 	private Goal goal;
+	private boolean isHost = false;
 }
