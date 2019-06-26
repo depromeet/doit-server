@@ -1,4 +1,4 @@
-package com.server.doit.controller.dto;
+package com.server.doit.domain.dto;
 
 import lombok.*;
 

@@ -1,6 +1,6 @@
 package com.server.doit.domain.service;
 
-import com.server.doit.controller.dto.GoalDto;
+import com.server.doit.domain.dto.GoalDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.entity.ProgressCheckType;
 import com.server.doit.domain.repository.GoalRepository;

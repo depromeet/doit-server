@@ -10,10 +10,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import com.server.doit.domain.dto.ShootDto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Shoot {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,4 +36,9 @@ public class Shoot {
 	@JoinColumn(name="checkId")
 	private ShootConfirm shootConfirm;
 	
+	public ShootDto toDto() {
+		return ShootDto.builder()
+				.sid(sid).shootName(shootName).date(date).likeCount(likeCount).gid(goal.getGid()).shootConfirm(shootConfirm)
+				.build();
+		}
 }
