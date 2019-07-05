@@ -1,5 +1,7 @@
 package com.server.doit.domain.service;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +23,17 @@ public class ShootService {
 	
 	public Shoot createShoot(ShootDto shootDto) {
 		
-		Goal goal = goalRepository.findOneByGid(shootDto.getGid());
+		Goal goal = shootDto.getGoal();
 		Shoot shoot = Shoot.builder()
 				.shootName(shootDto.getShootName())
 				.goal(goal)
+				.date(LocalDate.now())
 				.build(); 
 		shootRepository.save(shoot);
 		return shoot;
-	}	
+	}
+	public void deleteShoot(ShootDto shootDto) {
+		Shoot shoot = shootRepository.findOneBySid(shootDto.getSid());
+		shootRepository.delete(shoot);
+	}
 }

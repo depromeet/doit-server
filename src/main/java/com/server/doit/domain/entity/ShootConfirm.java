@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.server.doit.domain.entity.Member.MemberBuilder;
 
@@ -23,4 +25,7 @@ public class ShootConfirm {
 	Long checkId;
 	ShootConfirmType shootConfirmType;
 	String content;
+	@ManyToOne
+	@JoinColumn(name = "sid")
+	private Shoot shoot;
 }
