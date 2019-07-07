@@ -29,7 +29,7 @@ public class Shoot {
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Long sid;
 	private String shootName;
-	@JsonIgnore
+//	@JsonIgnore
 	private LocalDate date;
 	private Integer likeCount;
 	@ManyToOne
@@ -40,14 +40,14 @@ public class Shoot {
 //	@JoinColumn(name="checkId")
 //	private ShootConfirm shootConfirm;
 	
-	@JsonProperty
-    private long epochDate() {
-        return date.toEpochDay();
-    }
+//	@JsonProperty
+//    private long epochDate() {
+//        return date.toEpochDay();
+//    }
 	
-	public ShootDto toDto() {
-		return ShootDto.builder()
-				.sid(sid).shootName(shootName).date(date).likeCount(likeCount).goal(goal)
-				.build();
-		}
+//	public ShootDto toDto() {
+//		return ShootDto.builder()
+//				.sid(sid).shootName(shootName).date(date).likeCount(likeCount).goal(goal)
+//				.build();
+//		}
 }
