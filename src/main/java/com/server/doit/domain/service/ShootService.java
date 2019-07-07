@@ -12,7 +12,6 @@ import com.server.doit.domain.dto.ShootDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.entity.Shoot;
 import com.server.doit.domain.repository.GoalRepository;
-import com.server.doit.domain.repository.ShootPageRepository;
 import com.server.doit.domain.repository.ShootRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +22,6 @@ public class ShootService {
 	@Autowired
 	private ShootRepository shootRepository;
 	@Autowired
-	private ShootPageRepository shootPageRepository;
-	@Autowired
 	private GoalRepository goalRepository;
 	
 	public Shoot createShoot(ShootDto shootDto) {
@@ -34,6 +31,7 @@ public class ShootService {
 				.shootName(shootDto.getShootName())
 				.goal(goal)
 				.date(LocalDate.now())
+				.likeCount(0)
 				.build(); 
 		shootRepository.save(shoot);
 		return shoot;
