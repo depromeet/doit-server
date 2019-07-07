@@ -14,13 +14,13 @@ import lombok.Data;
 public class ShootDto {
     private Long sid;
 	private String shootName;
-	private LocalDate date;
+	//private LocalDate date;
 	private Integer likeCount;
-	private Goal goal;
+	private Long gid;
 	
-	public Shoot toEntity() {
-		return Shoot.builder()
-				.sid(sid).shootName(shootName).date(date).likeCount(likeCount).goal(goal)
-				.build();
-		}
+//	public Shoot toEntity() {
+//		return Shoot.builder()
+//				.sid(sid).shootName(shootName).date(date).likeCount(likeCount).goal(goal)
+//				.build();
+//		}
 }
