@@ -32,6 +32,7 @@ public class Shoot {
 //	@JsonIgnore
 	private LocalDate date;
 	private Integer likeCount;
+	private Integer unLikeCount;
 	@ManyToOne
 	@JoinColumn(name = "gid")
 	private Goal goal;
