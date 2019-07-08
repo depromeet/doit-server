@@ -32,6 +32,7 @@ public class ShootService {
 				.goal(goal)
 				.date(LocalDate.now())
 				.likeCount(0)
+				.unLikeCount(0)
 				.build(); 
 		shootRepository.save(shoot);
 		return shoot;
@@ -48,5 +49,43 @@ public class ShootService {
 		System.out.println("페이징결과 " + result);
 		List<Shoot> shootList = result.getContent();
 		return shootList;
+	}
+	
+	public Shoot upLikeCount(Long sid) {
+		Shoot shoot = shootRepository.findOneBySid(sid);
+		if(shoot == null) return null;
+		Integer count= shoot.getLikeCount();
+		count++;
+		shoot.setLikeCount(count);
+		
+		return shootRepository.save(shoot);
+	}
+	public Shoot downLikeCount(Long sid) {
+		Shoot shoot = shootRepository.findOneBySid(sid);
+		if(shoot == null) return null;
+		Integer count= shoot.getLikeCount();
+		count--;
+		shoot.setLikeCount(count);
+		
+		return shootRepository.save(shoot);
+	}
+	
+	public Shoot upUnLikeCount(Long sid) {
+		Shoot shoot = shootRepository.findOneBySid(sid);
+		if(shoot == null) return null;
+		Integer count= shoot.getUnLikeCount();
+		count++;
+		shoot.setUnLikeCount(count);
+		
+		return shootRepository.save(shoot);
+	}
+	public Shoot downUnLikeCount(Long sid) {
+		Shoot shoot = shootRepository.findOneBySid(sid);
+		if(shoot == null) return null;
+		Integer count= shoot.getUnLikeCount();
+		count--;
+		shoot.setUnLikeCount(count);
+		
+		return shootRepository.save(shoot);
 	}
 }
