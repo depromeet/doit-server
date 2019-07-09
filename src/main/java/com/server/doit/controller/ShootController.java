@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.server.doit.domain.dto.ShootAndLikeDto;
 import com.server.doit.domain.dto.ShootDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.entity.Shoot;
 import com.server.doit.domain.repository.GoalRepository;
-import com.server.doit.domain.repository.ShootRepository;
 import com.server.doit.domain.service.ShootService;
 
 @RestController
@@ -42,37 +42,41 @@ public class ShootController {
 		return ResponseEntity.ok().body(shootList);
 	}
 	
-	@PutMapping("api/shoot/up/likecount/{sid}")
-	public ResponseEntity<Shoot> upLikeCount(@PathVariable String sid) {
+	@PutMapping("api/shoot/up/likecount/{mid}/{sid}/")
+	public ResponseEntity<ShootAndLikeDto> upLikeCount(@PathVariable String mid, @PathVariable String sid) {
 		Long shootId = Long.parseLong(sid);
-		Shoot shoot =shootService.upLikeCount(shootId);
+		Long memId = Long.parseLong(mid);
+		ShootAndLikeDto shoot =shootService.upLikeCount(shootId,memId);
 		if(shoot == null)
 			return ResponseEntity.badRequest().body(null);
 		return ResponseEntity.ok().body(shoot);	
 	}
 	
-	@PutMapping("api/shoot/down/likecount/{sid}")
-	public ResponseEntity<Shoot> downLikeCount(@PathVariable String sid) {
+	@PutMapping("api/shoot/down/likecount/{mid}/{sid}")
+	public ResponseEntity<ShootAndLikeDto> downLikeCount(@PathVariable String mid, @PathVariable String sid) {
 		Long shootId = Long.parseLong(sid);
-		Shoot shoot =shootService.downLikeCount(shootId);
+		Long memId = Long.parseLong(mid);
+		ShootAndLikeDto shoot =shootService.downLikeCount(shootId,memId);
 		if(shoot == null)
 			return ResponseEntity.badRequest().body(null);
 		return ResponseEntity.ok().body(shoot);	
 	}
 	
-	@PutMapping("api/shoot/up/unlikecount/{sid}")
-	public ResponseEntity<Shoot> upUnLikeCount(@PathVariable String sid) {
+	@PutMapping("api/shoot/up/unlikecount/{mid}/{sid}")
+	public ResponseEntity<ShootAndLikeDto> upUnLikeCount(@PathVariable String mid, @PathVariable String sid) {
 		Long shootId = Long.parseLong(sid);
-		Shoot shoot =shootService.upUnLikeCount(shootId);
+		Long memId = Long.parseLong(mid);
+		ShootAndLikeDto shoot =shootService.upUnLikeCount(shootId,memId);
 		if(shoot == null)
 			return ResponseEntity.badRequest().body(null);
 		return ResponseEntity.ok().body(shoot);	
 	}
 	
-	@PutMapping("api/shoot/down/unlikecount/{sid}")
-	public ResponseEntity<Shoot> downUnLikeCount(@PathVariable String sid) {
+	@PutMapping("api/shoot/down/unlikecount/{mid}/{sid}")
+	public ResponseEntity<ShootAndLikeDto> downUnLikeCount(@PathVariable String mid, @PathVariable String sid) {
 		Long shootId = Long.parseLong(sid);
-		Shoot shoot =shootService.downUnLikeCount(shootId);
+		Long memId = Long.parseLong(mid);
+		ShootAndLikeDto shoot =shootService.downUnLikeCount(shootId,memId);
 		if(shoot == null)
 			return ResponseEntity.badRequest().body(null);
 		return ResponseEntity.ok().body(shoot);	
