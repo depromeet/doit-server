@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.server.doit.controller.dto.GoalDto;
+import com.server.doit.domain.dto.GoalDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.service.GoalService;
 
@@ -24,7 +24,7 @@ public class GoalController {
     }
 
     @PostMapping
-    @RequestMapping(value = "/api/goal/create")
+    @RequestMapping(value = "/api/goals/create")
     public ResponseEntity<Goal> createGoal(@RequestBody GoalDto goalDto) {
         if (!goalDto.isValid()) return ResponseEntity.badRequest().body(null);
 

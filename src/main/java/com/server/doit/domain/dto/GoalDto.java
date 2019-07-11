@@ -1,4 +1,4 @@
-package com.server.doit.controller.dto;
+package com.server.doit.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

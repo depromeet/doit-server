@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.server.doit.controller.dto.GoalDto;
+import com.server.doit.domain.dto.GoalDto;
 
 
 @RunWith(SpringRunner.class)
@@ -31,7 +31,7 @@ public class GoalControllerTest {
 
     @Test
     public void createGoal() throws Exception {
-        mockMvc.perform(post("/api/goal/create")
+        mockMvc.perform(post("/api/goals/create")
                 .contentType(MediaType.asMediaType(APPLICATION_JSON))
                 .content(objectMapper.writeValueAsString(
                         new GoalDto(1L, "Goal1", "Cat1", 1519442460L, 1519442460L, 1, 1, 1, true, 3, "#992233"))))
@@ -43,7 +43,7 @@ public class GoalControllerTest {
 
     @Test
     public void failToCreateGoal() throws Exception {
-        mockMvc.perform(post("/api/goal/create")
+        mockMvc.perform(post("/api/goals/create")
                 .contentType(MediaType.asMediaType(APPLICATION_JSON))
                 .content(objectMapper.writeValueAsString(
                         new GoalDto("Goal1"))))

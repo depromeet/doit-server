@@ -28,7 +28,6 @@ public class Shoot {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private Long sid;
-	private String shootName;
 	@JsonIgnore
 	private LocalDate date;
 	private Integer likeCount;
@@ -44,10 +43,4 @@ public class Shoot {
     private long epochDate() {
         return date.toEpochDay();
     }
-	
-	public ShootDto toDto() {
-		return ShootDto.builder()
-				.sid(sid).shootName(shootName).date(date).likeCount(likeCount).goal(goal)
-				.build();
-		}
 }
