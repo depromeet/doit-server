@@ -34,15 +34,16 @@ public class ShootController {
 		return ResponseEntity.ok().body(shoot);
 	}
 	// ex) http://localhost:8080/api/shoot/get/1?page=1&size=5
-	@GetMapping("api/shoot/get/{gid}")
-	public ResponseEntity<List<Shoot>> getShootByGoal(@PathVariable String gid,Pageable pageable) {
+	@GetMapping("api/shoot/get/mid/{mid}/gid/{gid}")
+	public ResponseEntity<List<ShootAndLikeDto>> getShootByGoal(@PathVariable String mid,@PathVariable String gid,Pageable pageable) {
 		Long goalId = Long.parseLong(gid);
+		Long memId = Long.parseLong(mid);
 		Goal goal = goalRepository.findOneByGid(goalId);
-		List<Shoot> shootList = shootService.readShootByGoal(goal, pageable);
+		List<ShootAndLikeDto> shootList = shootService.readShootByGoal(memId, goal, pageable);
 		return ResponseEntity.ok().body(shootList);
 	}
 	
-	@PutMapping("api/shoot/up/likecount/{mid}/{sid}/")
+	@PutMapping("api/shoot/up/likecount/mid/{mid}/sid/{sid}/")
 	public ResponseEntity<ShootAndLikeDto> upLikeCount(@PathVariable String mid, @PathVariable String sid) {
 		Long shootId = Long.parseLong(sid);
 		Long memId = Long.parseLong(mid);
@@ -52,7 +53,7 @@ public class ShootController {
 		return ResponseEntity.ok().body(shoot);	
 	}
 	
-	@PutMapping("api/shoot/down/likecount/{mid}/{sid}")
+	@PutMapping("api/shoot/down/likecount/mid/{mid}/sid/{sid}")
 	public ResponseEntity<ShootAndLikeDto> downLikeCount(@PathVariable String mid, @PathVariable String sid) {
 		Long shootId = Long.parseLong(sid);
 		Long memId = Long.parseLong(mid);
@@ -62,7 +63,7 @@ public class ShootController {
 		return ResponseEntity.ok().body(shoot);	
 	}
 	
-	@PutMapping("api/shoot/up/unlikecount/{mid}/{sid}")
+	@PutMapping("api/shoot/up/unlikecount/mid/{mid}/sid/{sid}")
 	public ResponseEntity<ShootAndLikeDto> upUnLikeCount(@PathVariable String mid, @PathVariable String sid) {
 		Long shootId = Long.parseLong(sid);
 		Long memId = Long.parseLong(mid);
@@ -72,7 +73,7 @@ public class ShootController {
 		return ResponseEntity.ok().body(shoot);	
 	}
 	
-	@PutMapping("api/shoot/down/unlikecount/{mid}/{sid}")
+	@PutMapping("api/shoot/down/unlikecount/mid/{mid}/sid/{sid}")
 	public ResponseEntity<ShootAndLikeDto> downUnLikeCount(@PathVariable String mid, @PathVariable String sid) {
 		Long shootId = Long.parseLong(sid);
 		Long memId = Long.parseLong(mid);
