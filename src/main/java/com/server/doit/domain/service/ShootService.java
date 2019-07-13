@@ -40,8 +40,11 @@ public class ShootService {
 	
 	public Shoot createShoot(ShootDto shootDto) {
 		Long gid = shootDto.getGid();
+		Long mid = shootDto.getMid();
 		Goal goal = goalRepository.findOneByGid(gid);
+		Member member = memberRepository.findOneByMid(mid);
 		Shoot shoot = Shoot.builder()
+				.maker(member)
 				.shootName(shootDto.getShootName())
 				.goal(goal)
 				.date(LocalDate.now())
