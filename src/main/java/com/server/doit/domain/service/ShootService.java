@@ -1,6 +1,7 @@
 package com.server.doit.domain.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,11 @@ public class ShootService {
 	
 	public Shoot createShoot(ShootDto shootDto) {
 		Long gid = shootDto.getGid();
+		Long mid = shootDto.getMid();
 		Goal goal = goalRepository.findOneByGid(gid);
+		Member member = memberRepository.findOneByMid(mid);
 		Shoot shoot = Shoot.builder()
+				.maker(member)
 				.shootName(shootDto.getShootName())
 				.goal(goal)
 				.date(LocalDate.now())
@@ -56,12 +60,33 @@ public class ShootService {
 	}
 	
 	//골 타임라인 paging read 
-	public List<Shoot> readShootByGoal(Goal goal, Pageable pageable) {
+	public List<ShootAndLikeDto> readShootByGoal(Long mid,Goal goal, Pageable pageable) {
 //		Pageable pageable = PageRequest.of(start, end); //현재페이지, 조회할 페이지수, 정렬정보
+		Member member = memberRepository.findOneByMid(mid);
 		Page<Shoot> result = shootRepository.findByGoal(goal, pageable);
 		System.out.println("페이징결과 " + result);
 		List<Shoot> shootList = result.getContent();
-		return shootList;
+		
+		List<ShootAndLikeDto> shootAndLikeList = new ArrayList<ShootAndLikeDto>();
+		for (Shoot shoot : shootList) {
+			
+			ShootAndLikeDto shootAndLike = ShootAndLikeDto.builder().shoot(shoot)
+					.build();
+			//해당 멤버가 해당 슛 좋아요 누른 상태
+			if(likeRepository.findOneByMemberAndShoot(member, shoot) != null)
+				shootAndLike.setLikeBoolean(true);
+			else
+				shootAndLike.setLikeBoolean(false);
+			//해당 멤버가 해당 슛 싫어요 누른 상태
+			if(unLikeRepository.findOneByMemberAndShoot(member, shoot) != null)
+				shootAndLike.setUnLikeBoolean(true);
+			else
+				shootAndLike.setUnLikeBoolean(false);
+			
+			shootAndLikeList.add(shootAndLike);
+		}
+		
+		return shootAndLikeList;
 	}
 	
 	public ShootAndLikeDto upLikeCount(Long sid,Long mid) {

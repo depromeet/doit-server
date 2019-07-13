@@ -36,6 +36,9 @@ public class Shoot {
 	@ManyToOne
 	@JoinColumn(name = "gid")
 	private Goal goal;
+	@OneToOne
+	@JoinColumn(name = "mid")
+	private Member maker;
 	
 //	@OneToOne
 //	@JoinColumn(name="checkId")
