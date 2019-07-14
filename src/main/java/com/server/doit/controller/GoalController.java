@@ -5,15 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.doit.controller.dto.GoalDto;
+import com.server.doit.domain.dto.ParticipantDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.entity.Participant;
-import com.server.doit.domain.repository.InviteInfoRepository;
 import com.server.doit.domain.service.GoalService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -49,13 +48,10 @@ public class GoalController {
     	return ResponseEntity.ok().body(inviteCode);
     }
     
-    @PutMapping("/api/goal/participate/code/{inviteId}/mid/{mid}/gid/{gid}")
-    public ResponseEntity<Participant> participateGoal(@PathVariable String inviteId,@PathVariable String mid,@PathVariable String gid){
-    	Long goalId = Long.parseLong(gid);
-		Long memId = Long.parseLong(mid);
-		Long code = Long.parseLong(inviteId);
-		
-		Participant participant = goalService.participateGoal(code,goalId, memId);	
+    @PostMapping("/api/goal/participate/")
+    public ResponseEntity<Participant> participateGoal(@RequestBody ParticipantDto participantDto){
+    	
+		Participant participant = goalService.participateGoal(participantDto.getInviteId(),participantDto.getGid(), participantDto.getMid());	
 		
 		if (participant == null) return ResponseEntity.badRequest().body(null);
         return ResponseEntity.ok().body(participant);
