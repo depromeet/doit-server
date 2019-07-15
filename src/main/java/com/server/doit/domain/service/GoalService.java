@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.server.doit.controller.dto.GoalDto;
 import com.server.doit.domain.entity.Goal;
+import com.server.doit.domain.entity.InviteInfo;
 import com.server.doit.domain.entity.Member;
 import com.server.doit.domain.entity.Participant;
 import com.server.doit.domain.entity.ProgressCheckType;
 import com.server.doit.domain.repository.GoalRepository;
+import com.server.doit.domain.repository.InviteInfoRepository;
 import com.server.doit.domain.repository.MemberRepository;
 import com.server.doit.domain.repository.ParticipantRepository;
 import com.server.doit.domain.repository.ProgressCheckTypeRepository;
@@ -21,6 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class GoalService {
 
+	@Autowired
+	private InviteInfoRepository inviteInfoRepository;
+	
     private final GoalRepository goalRepository;
     private final ProgressCheckTypeRepository progressCheckTypeRepository;
     private final MemberRepository memberRepository;
@@ -84,5 +89,47 @@ public class GoalService {
 
     private ProgressCheckType getProgressCheckType(int type) {
         return progressCheckTypeRepository.getOne((long) type);
+    }
+    
+    //초대
+    public Long invite(Long mid,Long gid){
+    	Member fromMember = memberRepository.findOneByMid(mid);
+    	Goal goal = goalRepository.findOneByGid(gid);
+    	InviteInfo inviteInfo = InviteInfo.builder()
+    			.fromMember(fromMember).goal(goal)
+    			.build();
+    	InviteInfo result = inviteInfoRepository.save(inviteInfo);
+    	
+    	if(result == null) return null;
+    	
+    	return result.getInviteId();
+    }
+    
+    //골에 참여
+    public Participant participateGoal (Long inviteId, Long gid,Long mid) {  //초대코드 , 참가할 골, 참가할 멤버
+    	Goal goal = goalRepository.findOneByGid(gid);
+    	Member member = memberRepository.findOneByMid(mid);
+    	
+    	if(goal == null) return null;
+    	if(member == null) return null;
+    	
+    	InviteInfo invite = inviteInfoRepository.findOneByInviteId(inviteId);
+    	
+    	if(invite.getGoal() != goal) //초대한 골과 현재 참여할 골이 같지 않으면 오류
+    		return null;
+    	if (participantRepository.findOneByMemberAndGoal(member, goal) != null) return null;  //이미 골에 참여되어 있는 상태임
+    	
+    	Participant participant = Participant.builder()
+                .goal(goal)
+                .member(member)
+                .isHost(false)
+                .build();
+    	
+    	if (participant == null) {
+            log.error("Fail to create participant");
+            return null;
+        }
+    	inviteInfoRepository.delete(invite);
+        return participantRepository.save(participant);
     }
 }
