@@ -23,8 +23,7 @@ public class GoalController {
         this.goalService = goalService;
     }
 
-    @PostMapping
-    @RequestMapping(value = "/api/goals/create")
+    @PostMapping("/api/goals/create")
     public ResponseEntity<Goal> createGoal(@RequestBody GoalDto goalDto) {
         if (!goalDto.isValid()) return ResponseEntity.badRequest().body(null);
 

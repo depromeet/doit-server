@@ -20,8 +20,7 @@ public class ShootController {
 		this.shootService = shootService;
 	}
 
-	@PostMapping
-	@RequestMapping(value = "api/shoots/create")
+	@PostMapping("api/shoots/create")
 	public ResponseEntity<Shoot> createShoot(@RequestBody ShootDto shootDto) {
 		Shoot shoot = shootService.createShoot(shootDto);
 		if(shoot == null)
@@ -29,11 +28,10 @@ public class ShootController {
 		return ResponseEntity.ok().body(shoot);
 	}
 
-	@PostMapping
-	@RequestMapping(value = "api/shoots/{sid}/image/create")
-	public ResponseEntity<String> uploadConfirmImage(@PathVariable String sid, @RequestParam("file") MultipartFile file) {
-		shootService.uploadImage(sid, file);
-		if(file == null)
+	@PostMapping("api/shoots/{sid}/image/create")
+	public ResponseEntity<String> uploadConfirmImage(@PathVariable String sid, @RequestParam("image") MultipartFile image) {
+		shootService.uploadImage(sid, image);
+		if(image == null)
 			return ResponseEntity.badRequest().body(null);
 		return ResponseEntity.ok().build();
 	}

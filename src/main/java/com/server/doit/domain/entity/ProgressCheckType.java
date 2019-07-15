@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProgressCheckType {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long pctId;
 	private String description; //설명
 }

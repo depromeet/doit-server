@@ -28,6 +28,12 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB
+#  resources:
+#    static-locations: classpath:/static/
 
 
 server:

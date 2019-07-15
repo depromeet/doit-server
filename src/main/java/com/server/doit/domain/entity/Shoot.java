@@ -26,13 +26,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Shoot {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sid;
 	@JsonIgnore
 	private LocalDate date;
 	private Integer likeCount;
 	@ManyToOne
 	@JoinColumn(name = "gid")
+	@JsonIgnore
 	private Goal goal;
 	
 //	@OneToOne
