@@ -28,6 +28,10 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+  mvc:
+    view:
+      prefix: /jsp/
+      suffix: .jsp
 
 
 server:
