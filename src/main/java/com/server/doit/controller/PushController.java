@@ -24,15 +24,12 @@ public class PushController {
 	@Autowired
 	PushService pushService;
 	
-	
 	@PostMapping("api/push/send")
-	public @ResponseBody ResponseEntity<String> send(@RequestBody List<PushDto> pushDtos){
+	public @ResponseBody ResponseEntity<String> send(@RequestBody PushDto pushDto){
 		JSONObject body = new JSONObject();
 		List<String> tokenList = new ArrayList<String>();
+		tokenList = pushDto.getTokenList();
 		
-		for (PushDto pushDto : pushDtos) {
-			tokenList.add(pushDto.getToken());
-		}
 		JSONArray jsonArray = new JSONArray();
 		for (String token : tokenList) {
 			jsonArray.put(token);			
@@ -40,8 +37,8 @@ public class PushController {
 		body.put("registration_ids", jsonArray);
 		
 		JSONObject notification = new JSONObject();
-		notification.put("title", "test");
-		notification.put("body", "Test Msg");
+		notification.put("title", pushDto.getTitle());
+		notification.put("body", pushDto.getMessage());
 		
 		body.put("notification", notification);
 		System.out.println(body.toString());
