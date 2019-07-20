@@ -8,7 +8,6 @@ public class DoitServerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DoitServerApplication.class, args);
-		System.out.println("시작");
 	}
 
 }

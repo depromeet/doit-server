@@ -28,18 +28,19 @@ public class Shoot {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sid;
+	private String shootName;
 	@JsonIgnore
 	private LocalDate date;
 	private Integer likeCount;
+	private Integer unLikeCount;
 	@ManyToOne
 	@JoinColumn(name = "gid")
 	@JsonIgnore
 	private Goal goal;
-	
-//	@OneToOne
-//	@JoinColumn(name="checkId")
-//	private ShootConfirm shootConfirm;
-	
+	@OneToOne
+	@JoinColumn(name = "mid")
+	private Member maker;
+
 	@JsonProperty
     private long epochDate() {
         return date.toEpochDay();

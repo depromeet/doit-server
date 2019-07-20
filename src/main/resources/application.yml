@@ -32,8 +32,10 @@ spring:
     multipart:
       max-file-size: 1GB
       max-request-size: 1GB
-#  resources:
-#    static-locations: classpath:/static/
+  mvc:
+    view:
+      prefix: /jsp/
+      suffix: .jsp
 
 
 server:
@@ -53,5 +55,12 @@ spring:
   h2:
     console:
       enabled: true
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
   mvc:
     static-path-pattern: /static/**
+    view:
+      prefix: /jsp/
+      suffix: .jsp
