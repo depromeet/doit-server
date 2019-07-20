@@ -52,20 +52,30 @@ public class ShootService {
 
         String text = shootDto.getText();
         if (text != null) {
-            ShootConfirm.builder()
+			shootConfirmRepository.save(ShootConfirm.builder()
                     .shoot(shoot)
                     .shootConfirmType(ShootConfirmType.TEXT)
                     .content(text)
-                    .build();
+                    .build());
         }
 
+
+		Long baseTime = shootDto.getBaseTime();
         Long time = shootDto.getTime();
-        if (time != null) {
-            ShootConfirm.builder()
+		if (baseTime != null) {
+			shootConfirmRepository.save(ShootConfirm.builder()
+					.shoot(shoot)
+					.shootConfirmType(ShootConfirmType.BASE_TIMER)
+					.content(time + "/" + baseTime)
+					.build());
+		}
+
+        else if (time != null) {
+            shootConfirmRepository.save(ShootConfirm.builder()
                     .shoot(shoot)
                     .shootConfirmType(ShootConfirmType.TIMER)
                     .content(String.valueOf(time))
-                    .build();
+                    .build());
         }
 
         return shoot;
@@ -90,8 +100,8 @@ public class ShootService {
 		Shoot shoot = shootRepository.findOneBySid(shootDto.getSid());
 		shootRepository.delete(shoot);
 	}
-	
-	//골 타임라인 paging read 
+
+	//골 타임라인 paging read
 	public List<ShootAndLikeDto> readShootByGoal(Long mid,Goal goal, Pageable pageable) {
 //		Pageable pageable = PageRequest.of(start, end); //현재페이지, 조회할 페이지수, 정렬정보
 		Member member = memberRepository.findOneByMid(mid);
@@ -99,11 +109,10 @@ public class ShootService {
 		System.out.println("페이징결과 " + result);
 		List<Shoot> shootList = result.getContent();
 		
-		List<ShootAndLikeDto> shootAndLikeList = new ArrayList<ShootAndLikeDto>();
+		List<ShootAndLikeDto> shootAndLikeList = new ArrayList<>();
 		for (Shoot shoot : shootList) {
 			
-			ShootAndLikeDto shootAndLike = ShootAndLikeDto.builder().shoot(shoot)
-					.build();
+			ShootAndLikeDto shootAndLike = ShootAndLikeDto.builder().shoot(shoot).build();
 			//해당 멤버가 해당 슛 좋아요 누른 상태
 			if(likeRepository.findOneByMemberAndShoot(member, shoot) != null)
 				shootAndLike.setLikeBoolean(true);
