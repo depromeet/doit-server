@@ -28,6 +28,10 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
   mvc:
     view:
       prefix: /jsp/
@@ -51,5 +55,12 @@ spring:
   h2:
     console:
       enabled: true
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
   mvc:
     static-path-pattern: /static/**
+    view:
+      prefix: /jsp/
+      suffix: .jsp

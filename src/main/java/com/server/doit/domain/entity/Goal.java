@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class Goal {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long gid;
     private String goalName;
     private String category;
@@ -36,7 +36,6 @@ public class Goal {
     private Integer penalty;
     private Integer progressCheckCount;
     private Boolean timerCheck;
-    private String code;
 
     @OneToOne
     @JoinColumn(name = "pctId")

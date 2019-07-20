@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.server.doit.controller.dto.GoalDto;
+import com.server.doit.domain.dto.GoalDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.entity.InviteInfo;
 import com.server.doit.domain.entity.Member;

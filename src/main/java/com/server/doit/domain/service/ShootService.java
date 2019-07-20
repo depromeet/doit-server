@@ -1,59 +1,91 @@
 package com.server.doit.domain.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.server.doit.domain.dto.ShootAndLikeDto;
+import com.server.doit.domain.dto.ShootDto;
+import com.server.doit.domain.entity.*;
+import com.server.doit.domain.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.server.doit.domain.dto.ShootAndLikeDto;
-import com.server.doit.domain.dto.ShootDto;
-import com.server.doit.domain.entity.Goal;
-import com.server.doit.domain.entity.LikeEntity;
-import com.server.doit.domain.entity.Member;
-import com.server.doit.domain.entity.Shoot;
-import com.server.doit.domain.entity.UnLikeEntity;
-import com.server.doit.domain.repository.GoalRepository;
-import com.server.doit.domain.repository.LikeRepository;
-import com.server.doit.domain.repository.MemberRepository;
-import com.server.doit.domain.repository.ShootRepository;
-import com.server.doit.domain.repository.UnLikeRepository;
-
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
 public class ShootService {
-	@Autowired
-	private ShootRepository shootRepository;
-	@Autowired
-	private GoalRepository goalRepository;
-	@Autowired 
-	private LikeRepository likeRepository;
-	@Autowired 
-	private UnLikeRepository unLikeRepository;
-	@Autowired
-	private MemberRepository memberRepository;
-	
-	public Shoot createShoot(ShootDto shootDto) {
-		Long gid = shootDto.getGid();
-		Long mid = shootDto.getMid();
-		Goal goal = goalRepository.findOneByGid(gid);
-		Member member = memberRepository.findOneByMid(mid);
-		Shoot shoot = Shoot.builder()
-				.maker(member)
+    private final ShootRepository shootRepository;
+    private final GoalRepository goalRepository;
+    private final StorageService storageService;
+    private final ShootConfirmRepository shootConfirmRepository;
+    private final LikeRepository likeRepository;
+    private final UnLikeRepository unLikeRepository;
+	private final MemberRepository memberRepository;
+
+    @Autowired
+    public ShootService(ShootRepository shootRepository, GoalRepository goalRepository, StorageService storageService, ShootConfirmRepository shootConfirmRepository, LikeRepository likeRepository, UnLikeRepository unLikeRepository, MemberRepository memberRepository) {
+        this.shootRepository = shootRepository;
+        this.goalRepository = goalRepository;
+        this.storageService = storageService;
+        this.shootConfirmRepository = shootConfirmRepository;
+		this.likeRepository = likeRepository;
+		this.unLikeRepository = unLikeRepository;
+		this.memberRepository = memberRepository;
+	}
+
+    public Shoot createShoot(ShootDto shootDto) {
+        Goal goal = goalRepository.getOne(shootDto.getGid());
+		Member member = memberRepository.findOneByMid(shootDto.getMid());
+        Shoot shoot = Shoot.builder()
+                .goal(goal)
 				.shootName(shootDto.getShootName())
-				.goal(goal)
-				.date(LocalDate.now())
+                .date(LocalDate.now())
+                .maker(member)
 				.likeCount(0)
 				.unLikeCount(0)
-				.build(); 
-		shootRepository.save(shoot);
-		return shoot;
-	}
+                .build();
+        shoot = shootRepository.save(shoot);
+
+        String text = shootDto.getText();
+        if (text != null) {
+            ShootConfirm.builder()
+                    .shoot(shoot)
+                    .shootConfirmType(ShootConfirmType.TEXT)
+                    .content(text)
+                    .build();
+        }
+
+        Long time = shootDto.getTime();
+        if (time != null) {
+            ShootConfirm.builder()
+                    .shoot(shoot)
+                    .shootConfirmType(ShootConfirmType.TIMER)
+                    .content(String.valueOf(time))
+                    .build();
+        }
+
+        return shoot;
+    }
+
+    public void uploadImage(String sid, MultipartFile file) {
+        Shoot shoot = shootRepository.findOneBySid(Long.valueOf(sid));
+
+        ShootConfirm shootConfirm = ShootConfirm.builder()
+                .shootConfirmType(ShootConfirmType.PICTURE)
+                .shoot(shoot)
+                .build();
+        shootConfirm = shootConfirmRepository.save(shootConfirm);
+
+        String fileName = shootConfirm.getCheckId() + ".jpg";
+        storageService.uploadFile(fileName, file);
+        shootConfirm.setContent(fileName);
+        shootConfirmRepository.save(shootConfirm);
+    }
+
 	public void deleteShoot(ShootDto shootDto) {
 		Shoot shoot = shootRepository.findOneBySid(shootDto.getSid());
 		shootRepository.delete(shoot);
@@ -183,23 +215,4 @@ public class ShootService {
 		
 		return shootAndLikeDto;
 	}
-	
-//	public Shoot upUnLikeCount(Long sid) {
-//		Shoot shoot = shootRepository.findOneBySid(sid);
-//		if(shoot == null) return null;
-//		Integer count= shoot.getUnLikeCount();
-//		count++;
-//		shoot.setUnLikeCount(count);
-//		
-//		return shootRepository.save(shoot);
-//	}
-//	public Shoot downUnLikeCount(Long sid) {
-//		Shoot shoot = shootRepository.findOneBySid(sid);
-//		if(shoot == null) return null;
-//		Integer count= shoot.getUnLikeCount();
-//		count--;
-//		shoot.setUnLikeCount(count);
-//		
-//		return shootRepository.save(shoot);
-//	}
 }

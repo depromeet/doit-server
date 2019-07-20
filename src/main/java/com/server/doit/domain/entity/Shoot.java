@@ -26,32 +26,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Shoot {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sid;
 	private String shootName;
-//	@JsonIgnore
+	@JsonIgnore
 	private LocalDate date;
 	private Integer likeCount;
 	private Integer unLikeCount;
 	@ManyToOne
 	@JoinColumn(name = "gid")
+	@JsonIgnore
 	private Goal goal;
 	@OneToOne
 	@JoinColumn(name = "mid")
 	private Member maker;
-	
-//	@OneToOne
-//	@JoinColumn(name="checkId")
-//	private ShootConfirm shootConfirm;
-	
-//	@JsonProperty
-//    private long epochDate() {
-//        return date.toEpochDay();
-//    }
-	
-//	public ShootDto toDto() {
-//		return ShootDto.builder()
-//				.sid(sid).shootName(shootName).date(date).likeCount(likeCount).goal(goal)
-//				.build();
-//		}
+
+	@JsonProperty
+    private long epochDate() {
+        return date.toEpochDay();
+    }
 }

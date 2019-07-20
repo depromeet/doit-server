@@ -1,6 +1,6 @@
 package com.server.doit.service;
 
-import com.server.doit.controller.dto.GoalDto;
+import com.server.doit.domain.dto.GoalDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.entity.Member;
 import com.server.doit.domain.entity.Participant;
