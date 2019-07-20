@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.server.doit.domain.entity.Member.MemberBuilder;
 
 import lombok.AllArgsConstructor;
@@ -27,5 +28,6 @@ public class ShootConfirm {
 	String content;
 	@ManyToOne
 	@JoinColumn(name = "sid")
+	@JsonBackReference
 	private Shoot shoot;
 }

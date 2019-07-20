@@ -1,16 +1,12 @@
 package com.server.doit.domain.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.server.doit.domain.dto.ShootDto;
 
@@ -40,6 +36,9 @@ public class Shoot {
 	@OneToOne
 	@JoinColumn(name = "mid")
 	private Member maker;
+	@OneToMany(mappedBy = "shoot")
+    @JsonManagedReference
+	private List<ShootConfirm> shootConfirmList;
 
 	@JsonProperty
     private long epochDate() {
