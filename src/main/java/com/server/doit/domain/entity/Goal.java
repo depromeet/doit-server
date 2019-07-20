@@ -36,6 +36,7 @@ public class Goal {
     private Integer penalty;
     private Integer progressCheckCount;
     private Boolean timerCheck;
+    private Integer progressRate;
 
     @OneToOne
     @JoinColumn(name = "pctId")

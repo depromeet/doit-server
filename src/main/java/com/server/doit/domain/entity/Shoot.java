@@ -39,6 +39,7 @@ public class Shoot {
 	@OneToMany(mappedBy = "shoot")
     @JsonManagedReference
 	private List<ShootConfirm> shootConfirmList;
+	private boolean isExceeded = false;
 
 	@JsonProperty
     private long epochDate() {

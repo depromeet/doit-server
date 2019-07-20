@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 public class GoalController {
@@ -29,12 +31,17 @@ public class GoalController {
 
         return ResponseEntity.ok().body(goal);
     }
-    
+
+    @GetMapping("/api/goals/{mid}")
+    public ResponseEntity<List<Goal>> getGoal(@PathVariable Long mid){
+        List<Goal> goalList = goalService.getGoalList(mid);
+        if(goalList == null || goalList.size() == 0) return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok().body(goalList);
+    }
+
     @GetMapping("/api/goal/invite/from/{mid}/goal/{gid}")
-    public ResponseEntity<Long> inviteGoal(@PathVariable String mid,@PathVariable String gid){
-    	Long goalId = Long.parseLong(gid);
-		Long memId = Long.parseLong(mid);
-    	Long inviteCode = goalService.invite(memId, goalId);
+    public ResponseEntity<Long> inviteGoal(@PathVariable Long mid, @PathVariable Long gid){
+    	Long inviteCode = goalService.invite(mid, gid);
     	if(inviteCode == null) return ResponseEntity.badRequest().body(null);
     	
     	return ResponseEntity.ok().body(inviteCode);

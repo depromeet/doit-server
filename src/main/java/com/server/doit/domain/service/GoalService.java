@@ -1,6 +1,9 @@
 package com.server.doit.domain.service;
 
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,6 +92,44 @@ public class GoalService {
 
     private ProgressCheckType getProgressCheckType(int type) {
         return progressCheckTypeRepository.getOne((long) type);
+    }
+
+    public List<Goal> getGoalList(Long mid) {
+        Member member = memberRepository.getOne(mid);
+        List<Participant> participantList = participantRepository.findAllByMember(member);
+        List<Goal> goalList = new ArrayList<>();
+
+        for (Participant participant : participantList) {
+            Goal goal = participant.getGoal();
+            calcProgressRate(mid, goal);
+            goalList.add(goal);
+        }
+
+        return goalList;
+    }
+
+    private void calcProgressRate(Long mid, Goal goal) {
+        int baseCount, doneCount, res;
+        int pctId = goal.getProgressCheckType().getPctId().intValue();
+        LocalDate today = LocalDate.now();
+        Member member = memberRepository.getOne(mid);
+
+        doneCount = participantRepository.countAllByGoalAndMember(goal, member);
+        baseCount = 10;
+        switch (pctId) {
+            case 1:
+                baseCount = (Period.between(goal.getStartDate(), today).getDays() / 7 + 1) * goal.getProgressCheckCount();
+                break;
+            case 2:
+                baseCount = Period.between(goal.getStartDate(), today).getDays();
+                break;
+            case 3:
+                baseCount = Period.between(goal.getStartDate(), today).getDays();
+                break;
+        }
+
+        res = (int) (doneCount / (double)baseCount) * 100;
+        goal.setProgressRate(res);
     }
     
     //초대
