@@ -30,8 +30,8 @@ spring:
       fail-on-empty-beans: false
   servlet:
     multipart:
-      max-file-size: 1MB
-      max-request-size: 1MB
+      max-file-size: 1GB
+      max-request-size: 1GB
 #  resources:
 #    static-locations: classpath:/static/
 

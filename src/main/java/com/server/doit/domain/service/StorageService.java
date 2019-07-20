@@ -13,17 +13,14 @@ import java.nio.file.StandardCopyOption;
 @Slf4j
 @Service
 public class StorageService {
-    @Value("classpath:resources/static/")
-    private String path;
-
-    public void uploadFile(String fileName, MultipartFile file) {
+    final String p = "/resources/static/";
+    void uploadFile(String fileName, MultipartFile file) {
         if (file.isEmpty()) {
             log.error("Failed to store empty file");
         }
 
         try {
-            String p = "/Users/user/Projects/doit-server/src/main/resources/static";
-            Files.copy(file.getInputStream(), Paths.get(path + fileName),
+            Files.copy(file.getInputStream(), Paths.get(p + fileName),
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             log.error(String.valueOf(e));
