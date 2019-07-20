@@ -29,4 +29,5 @@ public class Member {
 	private String kakaoId;
 	private String name;
 	private String profileImgUrl;
+	private String firebaseToken;
 }

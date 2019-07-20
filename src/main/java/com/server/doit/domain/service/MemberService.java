@@ -29,7 +29,7 @@ public class MemberService {
 	 * @return Member
 	 */
     @Transactional
-    public Member getOrCreateMember(String kakaoToken) {
+    public Member getOrCreateMember(String kakaoToken, String firebaseToken) {
         final KakaoUserDto kakaoUserDto = kakaoAdapter.getUserInfo(kakaoToken);
         if (kakaoUserDto == null) {
             throw new ApiFailedException("Failed to get user info from kakao api", HttpStatus.SERVICE_UNAVAILABLE);
@@ -44,7 +44,17 @@ public class MemberService {
                     member.setKakaoId(kakaoId);
                     member.setProfileImgUrl(profileImgUrl);
                     member.setName(name);
+                    member.setFirebaseToken(firebaseToken);
                     return memberRepository.save(member);
                 });
+    }
+    
+    public Member refreshFirebaseToken(String mid, String firebaseToken) {
+    	Long memberId = Long.parseLong(mid);
+    	Member member = memberRepository.findOneByMid(memberId);
+    	if(member == null) return null;
+    	
+    	member.setFirebaseToken(firebaseToken);
+    	return memberRepository.save(member);
     }
 }
