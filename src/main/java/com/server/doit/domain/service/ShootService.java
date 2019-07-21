@@ -49,23 +49,30 @@ public class ShootService {
         LocalDate date;
 
         // 하루에 여러번 한 경우
-        if (shootRepository.findAllByMakerAndDate(member, today).size() > 0) isExceed = true;
+        if (shootRepository.countAllByMakerAndDateAndIsExceeded(member, today, false) > 0) isExceed = true;
 
         if (goal.getProgressCheckType().getPctId() == 1) {
-
             // 주 N회를 초과한 경우
             int doneCount = 0;
             int days = Period.between(startDate, today).getDays() % 7;
 
-            for (int i = 1; i <= days - 1; i++) {
+            for (int i = 1; i < days; i++) {
                 date = today.minusDays(i);
-                if (shootRepository.findAllByMakerAndDateAndExceeded(member, date, false).size() > 0) doneCount++;
+                if (shootRepository.countAllByMakerAndDateAndIsExceeded(member, date, false) > 0) doneCount++;
             }
 
             if (doneCount >= goal.getProgressCheckCount()) isExceed = true;
         }
 
-        // 해당 요일이 아닌데 한 경우
+        // 월 1, 일 7
+        if (goal.getProgressCheckType().getPctId() == 2) {
+            int todayOfWeek = today.getDayOfWeek().getValue();
+            int checkCount = goal.getProgressCheckCount();
+
+            checkCount = checkCount >>> (todayOfWeek - 1);
+            if ((checkCount & 1) == 0) isExceed = true;
+        }
+
         Shoot shoot = Shoot.builder()
                 .goal(goal)
                 .shootName(shootDto.getShootName())
