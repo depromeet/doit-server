@@ -1,7 +1,12 @@
 package com.server.doit.domain.service;
 
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.server.doit.domain.repository.*;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,32 +16,27 @@ import com.server.doit.domain.entity.InviteInfo;
 import com.server.doit.domain.entity.Member;
 import com.server.doit.domain.entity.Participant;
 import com.server.doit.domain.entity.ProgressCheckType;
-import com.server.doit.domain.repository.GoalRepository;
-import com.server.doit.domain.repository.InviteInfoRepository;
-import com.server.doit.domain.repository.MemberRepository;
-import com.server.doit.domain.repository.ParticipantRepository;
-import com.server.doit.domain.repository.ProgressCheckTypeRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class GoalService {
-
-	@Autowired
-	private InviteInfoRepository inviteInfoRepository;
-	
+	private final InviteInfoRepository inviteInfoRepository;
     private final GoalRepository goalRepository;
     private final ProgressCheckTypeRepository progressCheckTypeRepository;
     private final MemberRepository memberRepository;
     private final ParticipantRepository participantRepository;
+    private final ShootRepository shootRepository;
 
     @Autowired
-    public GoalService(GoalRepository goalRepository, ProgressCheckTypeRepository progressCheckTypeRepository, MemberRepository memberRepository, ParticipantRepository participantRepository) {
+    public GoalService(GoalRepository goalRepository, ProgressCheckTypeRepository progressCheckTypeRepository, MemberRepository memberRepository, ParticipantRepository participantRepository, InviteInfoRepository inviteInfoRepository, ShootRepository shootRepository) {
         this.goalRepository = goalRepository;
         this.progressCheckTypeRepository = progressCheckTypeRepository;
         this.memberRepository = memberRepository;
         this.participantRepository = participantRepository;
+        this.inviteInfoRepository = inviteInfoRepository;
+        this.shootRepository = shootRepository;
     }
 
     public Goal createGoal(GoalDto goalDto) {
@@ -89,6 +89,64 @@ public class GoalService {
 
     private ProgressCheckType getProgressCheckType(int type) {
         return progressCheckTypeRepository.getOne((long) type);
+    }
+
+    public List<Goal> getGoalList(Long mid) {
+        Member member = memberRepository.getOne(mid);
+        List<Participant> participantList = participantRepository.findAllByMember(member);
+        List<Goal> goalList = new ArrayList<>();
+
+        for (Participant participant : participantList) {
+            Goal goal = participant.getGoal();
+            calcProgressRate(mid, goal);
+            goalList.add(goal);
+        }
+
+        return goalList;
+    }
+
+    private void calcProgressRate(Long mid, Goal goal) {
+        int baseCount, doneCount, res;
+        int pctId = goal.getProgressCheckType().getPctId().intValue();
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = goal.getStartDate();
+        Member member = memberRepository.getOne(mid);
+
+        doneCount = shootRepository.countAllByGoalAndMakerAndIsExceeded(goal, member, false);
+        baseCount = 10;
+        switch (pctId) {
+            case 1:
+                baseCount = (Period.between(startDate, today).getDays() / 7 + 1) * goal.getProgressCheckCount();
+                break;
+            case 2:
+                int progressCheckCount = goal.getProgressCheckCount();
+                int checkCount = 0;
+
+                for (int i = 0; i < 7; i++) {
+                    if ((progressCheckCount & 1) > 0) checkCount++;
+                    progressCheckCount = progressCheckCount >>> 1;
+                }
+
+                baseCount = (Period.between(startDate, today).getDays() / 7) * checkCount;
+                int days = Period.between(startDate, today).getDays() % 7;
+
+                for (int i = 0; i < days; i++) {
+                    LocalDate date = today.minusDays(i);
+                    int dayOfWeek = date.getDayOfWeek().getValue();
+
+                    dayOfWeek  = 1 << (dayOfWeek - 1);
+
+                    if ((goal.getProgressCheckCount() & dayOfWeek) > 0) baseCount++;
+                }
+
+                break;
+            case 3:
+                baseCount = Period.between(goal.getStartDate(), today).getDays();
+                break;
+        }
+
+        res = (int) ((doneCount / (double)baseCount) * 100);
+        goal.setProgressRate(res);
     }
     
     //초대
