@@ -1,27 +1,29 @@
 package com.server.doit.controller;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.server.doit.domain.dto.ShootAndLikeDto;
 import com.server.doit.domain.dto.ShootDto;
+import com.server.doit.domain.dto.ShootModifyDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.entity.Shoot;
 import com.server.doit.domain.repository.GoalRepository;
 import com.server.doit.domain.service.ShootService;
-import org.springframework.web.multipart.MultipartFile;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -100,4 +102,23 @@ public class ShootController {
             return ResponseEntity.badRequest().body(null);
         return ResponseEntity.ok().body(shoot);
     }
+    @PutMapping("api/shoot/update/text")
+    public ResponseEntity<Shoot> updateShoot(@RequestBody ShootModifyDto shootModifyDto) {
+    	Long sid = shootModifyDto.getSid();
+    	String content = shootModifyDto.getContent();
+    	Shoot shoot = shootService.updateShoot(sid, content);
+    	if (shoot == null)
+            return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok().body(shoot);
+    }
+    
+    @DeleteMapping("api/shoot/{sid}")
+    public ResponseEntity<String> deleteShoot(@PathVariable Long sid){
+    	String result = shootService.deleteShoot(sid);
+    	
+    	if (result == null)
+            return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok().body(result);	
+    }
+    
 }
