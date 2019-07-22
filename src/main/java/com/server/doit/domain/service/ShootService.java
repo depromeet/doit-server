@@ -1,20 +1,33 @@
 package com.server.doit.domain.service;
 
-import com.server.doit.domain.dto.ShootAndLikeDto;
-import com.server.doit.domain.dto.ShootDto;
-import com.server.doit.domain.entity.*;
-import com.server.doit.domain.repository.*;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.List;
+import com.server.doit.domain.dto.ShootAndLikeDto;
+import com.server.doit.domain.dto.ShootDto;
+import com.server.doit.domain.entity.Goal;
+import com.server.doit.domain.entity.LikeEntity;
+import com.server.doit.domain.entity.Member;
+import com.server.doit.domain.entity.Shoot;
+import com.server.doit.domain.entity.ShootConfirm;
+import com.server.doit.domain.entity.ShootConfirmType;
+import com.server.doit.domain.entity.UnLikeEntity;
+import com.server.doit.domain.repository.GoalRepository;
+import com.server.doit.domain.repository.LikeRepository;
+import com.server.doit.domain.repository.MemberRepository;
+import com.server.doit.domain.repository.ShootConfirmRepository;
+import com.server.doit.domain.repository.ShootRepository;
+import com.server.doit.domain.repository.UnLikeRepository;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -257,4 +270,29 @@ public class ShootService {
 
         return shootAndLikeDto;
     }
+    //슛 삭제
+    public String deleteShoot(Long sid) {
+    	Shoot shoot = shootRepository.findOneBySid(sid);
+    	if(shoot == null) return null;
+    	List<ShootConfirm> shootConfirmList = shootConfirmRepository.findAllByShoot(shoot);
+    	shootConfirmRepository.deleteInBatch(shootConfirmList);
+
+    	List<LikeEntity> shootLikeList = likeRepository.findAllByShoot(shoot);
+    	List<UnLikeEntity> shootUnLikeList = unLikeRepository.findAllByShoot(shoot);
+    	likeRepository.deleteInBatch(shootLikeList);
+    	unLikeRepository.deleteInBatch(shootUnLikeList);
+    	shootRepository.delete(shoot);
+    	
+    	return "success";
+    }
+    //슛 수정 (텍스트만)
+    public Shoot updateShoot(Long sid,String content) {
+    	Shoot shoot = shootRepository.findOneBySid(sid);
+    	if(shoot == null) return null;
+    	ShootConfirm shootConfirm = shootConfirmRepository.findOneByShootConfirmType(ShootConfirmType.TEXT);
+    	shootConfirm.setContent(content);
+    	shootConfirmRepository.save(shootConfirm);
+    	return shoot;
+    }
+     
 }
