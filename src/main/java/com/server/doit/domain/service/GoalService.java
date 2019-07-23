@@ -121,6 +121,7 @@ public class GoalService {
             GoalResultDto goalResultDto = GoalResultDto.builder().member(member).build();
             
             calcProgressRate(member.getMid(), goal);
+            System.out.println("check"+goal.getProgressRate());
             if(goal.getProgressRate() < 80) { // 진행률이 80퍼가 안되면
             	float penaltyPercent = (float) ((100-goal.getProgressRate())/100.0);
             	int penalty = (int) (goal.getPenalty()*penaltyPercent);
@@ -136,7 +137,7 @@ public class GoalService {
             goalResultDtoList.add(goalResultDto);
         }
     	Integer money = 0;
-    	if(participantRepository.countAllByGoal(goal) == successCount) money = goal.getPenalty();
+    	if(participantRepository.countAllByGoal(goal) == successCount | sumPenalty==0 | successCount==0) money = goal.getPenalty();
     	else {
     	money = sumPenalty/successCount;
     	}
