@@ -4,9 +4,11 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.server.doit.domain.dto.GoalAndMembersDto;
+import com.server.doit.domain.dto.MemberDto;
 import com.server.doit.domain.repository.*;
-import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +68,35 @@ public class GoalService {
         return goal;
     }
 
+    public GoalAndMembersDto getGoalAndMembers(Long gid) {
+        Goal goal = goalRepository.getOne(gid);
+
+        System.out.println("@@@@" + goal);
+
+        if (goal == null) {
+            log.error("Fail to find goal");
+            return null;
+        }
+
+        List<Participant> participantList = participantRepository.findAllByGoal(goal);
+        List<MemberDto> memberDtos = participantList.stream()
+                .map(Participant::getMember)
+                .map(member -> MemberDto.builder()
+                        .mid(member.getMid())
+                        .name(member.getName())
+                        .imageUrl(member.getProfileImgUrl())
+                        .build())
+                .collect(Collectors.toList());
+
+        memberDtos.forEach(memberDto -> memberDto.setProgressRate(calcProgressRate(memberDto.getMid(), goal)));
+        memberDtos.sort((o1, o2) -> o2.getProgressRate() - o1.getProgressRate());
+
+        return GoalAndMembersDto.builder()
+                .goal(goal)
+                .memberDtoList(memberDtos)
+                .build();
+    }
+
     private Goal getGoal(GoalDto goalDto) {
         ProgressCheckType progressCheckType = getProgressCheckType(goalDto.getProgressType());
 
@@ -98,14 +129,14 @@ public class GoalService {
 
         for (Participant participant : participantList) {
             Goal goal = participant.getGoal();
-            calcProgressRate(mid, goal);
+            goal.setProgressRate(calcProgressRate(mid, goal));
             goalList.add(goal);
         }
 
         return goalList;
     }
 
-    private void calcProgressRate(Long mid, Goal goal) {
+    private int calcProgressRate(Long mid, Goal goal) {
         int baseCount, doneCount, res;
         int pctId = goal.getProgressCheckType().getPctId().intValue();
         LocalDate today = LocalDate.now();
@@ -146,7 +177,8 @@ public class GoalService {
         }
 
         res = (int) ((doneCount / (double)baseCount) * 100);
-        goal.setProgressRate(res);
+
+        return res;
     }
     
     //초대
