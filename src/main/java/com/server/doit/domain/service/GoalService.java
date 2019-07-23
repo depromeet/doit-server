@@ -120,7 +120,8 @@ public class GoalService {
             Member member = participant.getMember();
             GoalResultDto goalResultDto = GoalResultDto.builder().member(member).build();
             
-            calcProgressRate(member.getMid(), goal);
+            Integer progressRate = calcProgressRate(member.getMid(), goal);
+            goal.setProgressRate(progressRate);
             System.out.println("check"+goal.getProgressRate());
             if(goal.getProgressRate() < 80) { // 진행률이 80퍼가 안되면
             	float penaltyPercent = (float) ((100-goal.getProgressRate())/100.0);
@@ -154,7 +155,7 @@ public class GoalService {
     	return false;
     }
     
-    private void calcProgressRate(Long mid, Goal goal) {
+    private int calcProgressRate(Long mid, Goal goal) {
         int baseCount, doneCount, res;
         int pctId = goal.getProgressCheckType().getPctId().intValue();
         LocalDate today = LocalDate.now();
@@ -195,7 +196,8 @@ public class GoalService {
         }
 
         res = (int) ((doneCount / (double)baseCount) * 100);
-        goal.setProgressRate(res);
+
+        return res;
     }
     
     //초대
