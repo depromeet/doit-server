@@ -1,6 +1,7 @@
 package com.server.doit.controller;
 
 import com.server.doit.domain.dto.GoalDto;
+import com.server.doit.domain.dto.GoalResultDto;
 import com.server.doit.domain.dto.ParticipantDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.entity.Participant;
@@ -54,6 +55,13 @@ public class GoalController {
 		
 		if (participant == null) return ResponseEntity.badRequest().body(null);
         return ResponseEntity.ok().body(participant);
+    }
+    @GetMapping("/api/goal/isend/result/{gid}")
+    public ResponseEntity<List<GoalResultDto>> resultGoal(@PathVariable Long gid) {
+    	List<GoalResultDto> goalResultList = goalService.finishGoalResult(gid);
+    	
+    	if (goalResultList == null) return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok().body(goalResultList);
     }
     
 }
