@@ -69,10 +69,7 @@ public class GoalService {
     }
 
     public GoalAndMembersDto getGoalAndMembers(Long gid) {
-        Goal goal = goalRepository.getOne(gid);
-
-        System.out.println("@@@@" + goal);
-
+        Goal goal = goalRepository.findOneByGid(gid);
         if (goal == null) {
             log.error("Fail to find goal");
             return null;

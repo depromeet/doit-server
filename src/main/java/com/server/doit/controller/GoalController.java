@@ -43,7 +43,7 @@ public class GoalController {
     @GetMapping("/api/goal/{gid}")
     public ResponseEntity<GoalAndMembersDto> getGoal(@PathVariable Long gid) {
         GoalAndMembersDto goalAndMembersDto = goalService.getGoalAndMembers(gid);
-        System.out.println("@@@" + goalAndMembersDto);
+        
         if (goalAndMembersDto == null) return ResponseEntity.badRequest().body(null);
         return ResponseEntity.ok().body(goalAndMembersDto);
     }
