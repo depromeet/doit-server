@@ -3,6 +3,10 @@ package com.server.doit.domain.service;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.scheduling.annotation.Async;
@@ -15,8 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@PropertySource("classpath:/com/server/doit/config/config.properties")
 public class PushService {
-	private static final String SERVER_KEY = "AAAAy_5K1Tw:APA91bGmJTLWt5PSJ5_g1dfIFWMBFPsVbiuzS7Vvh8WVP-m7rUcsrC-wmUl1WV_wB7SSVjH2woXlps7XgeZrWvlzvS237c7hfKuLPSD6p7I2ZY1dbiY9Pmx1JY9TebZJex5K5DFtthAb";
+	
+	@Value("${fcm.key}")
+	private String SERVER_KEY;
 	private static final String API_URL ="https://fcm.googleapis.com/fcm/send";
 	
 	@Async
