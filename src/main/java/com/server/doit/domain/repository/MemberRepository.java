@@ -2,6 +2,7 @@ package com.server.doit.domain.repository;
 
 import java.util.Optional;
 
+import com.server.doit.domain.entity.Participant;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.server.doit.domain.entity.Member;
