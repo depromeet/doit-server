@@ -73,5 +73,13 @@ public class GoalController {
     	if (goalResultList == null) return ResponseEntity.badRequest().body(null);
         return ResponseEntity.ok().body(goalResultList);
     }
+    
+    @DeleteMapping("api/goal/{gid}")
+    public ResponseEntity<String> deleteGoal(@PathVariable Long gid){
+    	String result = goalService.deleteGoal(gid);
+    	if (result == null)
+            return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok().body(result);	
+    }
 
 }

@@ -6,19 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.server.doit.domain.dto.GoalAndMembersDto;
-import com.server.doit.domain.dto.MemberDto;
-import com.server.doit.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.server.doit.domain.dto.GoalAndMembersDto;
 import com.server.doit.domain.dto.GoalDto;
 import com.server.doit.domain.dto.GoalResultDto;
+import com.server.doit.domain.dto.MemberDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.entity.InviteInfo;
 import com.server.doit.domain.entity.Member;
 import com.server.doit.domain.entity.Participant;
 import com.server.doit.domain.entity.ProgressCheckType;
+import com.server.doit.domain.entity.Shoot;
+import com.server.doit.domain.repository.GoalRepository;
+import com.server.doit.domain.repository.InviteInfoRepository;
+import com.server.doit.domain.repository.MemberRepository;
+import com.server.doit.domain.repository.ParticipantRepository;
+import com.server.doit.domain.repository.ProgressCheckTypeRepository;
+import com.server.doit.domain.repository.ShootRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +37,8 @@ public class GoalService {
     private final MemberRepository memberRepository;
     private final ParticipantRepository participantRepository;
     private final ShootRepository shootRepository;
+    @Autowired
+    private ShootService shootService;
 
     @Autowired
     public GoalService(GoalRepository goalRepository, ProgressCheckTypeRepository progressCheckTypeRepository, MemberRepository memberRepository, ParticipantRepository participantRepository, InviteInfoRepository inviteInfoRepository, ShootRepository shootRepository) {
@@ -270,4 +278,19 @@ public class GoalService {
     	inviteInfoRepository.delete(invite);
         return participantRepository.save(participant);
     }
+    
+    public String deleteGoal(Long gid) {
+    	Goal goal = goalRepository.findOneByGid(gid);
+    	if(goal == null) return null;
+    	List<Shoot> shootList = shootRepository.findAllByGoal(goal);
+    	for (Shoot shoot : shootList) {
+    		shootService.deleteShoot(shoot.getSid());
+		}
+    	List<Participant> goalParticipantList = participantRepository.findAllByGoal(goal);
+    	participantRepository.deleteInBatch(goalParticipantList);
+    	goalRepository.delete(goal);
+    	return "success";
+    }
+    
+    
 }

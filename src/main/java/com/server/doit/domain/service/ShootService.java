@@ -141,10 +141,7 @@ public class ShootService {
         shootConfirmRepository.save(shootConfirm);
     }
 
-    public void deleteShoot(ShootDto shootDto) {
-        Shoot shoot = shootRepository.findOneBySid(shootDto.getSid());
-        shootRepository.delete(shoot);
-    }
+    
 
     //골 타임라인 paging read
     public List<ShootAndLikeDto> readShootByGoal(Long mid, Goal goal, Pageable pageable) {
