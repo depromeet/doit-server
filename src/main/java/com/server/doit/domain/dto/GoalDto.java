@@ -3,6 +3,8 @@ package com.server.doit.domain.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString

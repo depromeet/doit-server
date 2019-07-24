@@ -1,5 +1,6 @@
 package com.server.doit.controller;
 
+import com.server.doit.domain.dto.GoalAndMembersDto;
 import com.server.doit.domain.dto.GoalDto;
 import com.server.doit.domain.dto.GoalResultDto;
 import com.server.doit.domain.dto.ParticipantDto;
@@ -34,28 +35,37 @@ public class GoalController {
     }
 
     @GetMapping("/api/goals/{mid}")
-    public ResponseEntity<List<Goal>> getGoal(@PathVariable Long mid){
+    public ResponseEntity<List<Goal>> getGoals(@PathVariable Long mid) {
         List<Goal> goalList = goalService.getGoalList(mid);
-        if(goalList == null || goalList.size() == 0) return ResponseEntity.badRequest().body(null);
+        if (goalList == null || goalList.size() == 0) return ResponseEntity.badRequest().body(null);
         return ResponseEntity.ok().body(goalList);
     }
 
-    @GetMapping("/api/goal/invite/from/{mid}/goal/{gid}")
-    public ResponseEntity<Long> inviteGoal(@PathVariable Long mid, @PathVariable Long gid){
-    	Long inviteCode = goalService.invite(mid, gid);
-    	if(inviteCode == null) return ResponseEntity.badRequest().body(null);
-    	
-    	return ResponseEntity.ok().body(inviteCode);
+    @GetMapping("/api/goal/{gid}")
+    public ResponseEntity<GoalAndMembersDto> getGoal(@PathVariable Long gid) {
+        GoalAndMembersDto goalAndMembersDto = goalService.getGoalAndMembers(gid);
+        
+        if (goalAndMembersDto == null) return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.ok().body(goalAndMembersDto);
     }
-    
+
+    @GetMapping("/api/goal/invite/from/{mid}/goal/{gid}")
+    public ResponseEntity<Long> inviteGoal(@PathVariable Long mid, @PathVariable Long gid) {
+        Long inviteCode = goalService.invite(mid, gid);
+        if (inviteCode == null) return ResponseEntity.badRequest().body(null);
+
+        return ResponseEntity.ok().body(inviteCode);
+    }
+
     @PostMapping("/api/goal/participate/")
-    public ResponseEntity<Participant> participateGoal(@RequestBody ParticipantDto participantDto){
-    	
-		Participant participant = goalService.participateGoal(participantDto.getInviteId(),participantDto.getGid(), participantDto.getMid());	
-		
-		if (participant == null) return ResponseEntity.badRequest().body(null);
+    public ResponseEntity<Participant> participateGoal(@RequestBody ParticipantDto participantDto) {
+
+        Participant participant = goalService.participateGoal(participantDto.getInviteId(), participantDto.getGid(), participantDto.getMid());
+
+        if (participant == null) return ResponseEntity.badRequest().body(null);
         return ResponseEntity.ok().body(participant);
     }
+
     @GetMapping("/api/goal/isend/result/{gid}")
     public ResponseEntity<List<GoalResultDto>> resultGoal(@PathVariable Long gid) {
     	List<GoalResultDto> goalResultList = goalService.finishGoalResult(gid);
@@ -63,5 +73,5 @@ public class GoalController {
     	if (goalResultList == null) return ResponseEntity.badRequest().body(null);
         return ResponseEntity.ok().body(goalResultList);
     }
-    
+
 }

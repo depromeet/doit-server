@@ -10,7 +10,8 @@ import com.server.doit.domain.entity.Participant;
 
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
     public List<Participant> findAllByMember(Member member);
-    public Participant findOneByMemberAndGoal(Member member,Goal goal);
+    public List<Participant> findAllByGoal(Goal goal);
+    public Participant findOneByMemberAndGoal(Member member, Goal goal);
     public int countAllByGoalAndMember(Goal goal, Member member);
     public int countAllByGoal(Goal goal);
     public List<Participant> findAllByGoal(Goal goal);
