@@ -14,5 +14,4 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     public Participant findOneByMemberAndGoal(Member member, Goal goal);
     public int countAllByGoalAndMember(Goal goal, Member member);
     public int countAllByGoal(Goal goal);
-    public List<Participant> findAllByGoal(Goal goal);
 }
