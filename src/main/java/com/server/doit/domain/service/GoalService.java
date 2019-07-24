@@ -180,7 +180,7 @@ public class GoalService {
     
     public boolean checkGoalIsEnd(Long gid) {
     	Goal goal = goalRepository.findOneByGid(gid);
-    	if(goal.getEndDate().isEqual(LocalDate.now()) ) return true;
+    	if(goal.getEndDate().isEqual(LocalDate.now()) | goal.getEndDate().isBefore(LocalDate.now()) ) return true;
     	return false;
     }
     
