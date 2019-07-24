@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.server.doit.domain.dto.GoalDto;
+import com.server.doit.domain.dto.GoalResultDto;
 import com.server.doit.domain.entity.Goal;
 import com.server.doit.domain.entity.InviteInfo;
 import com.server.doit.domain.entity.Member;
@@ -133,6 +134,56 @@ public class GoalService {
         return goalList;
     }
 
+  
+    public List<GoalResultDto> finishGoalResult(Long gid) {
+    	Goal goal = goalRepository.findOneByGid(gid);
+    	if( !checkGoalIsEnd(gid) ) return null;
+    	List<Goal> goalList = new ArrayList<>();
+    	List<GoalResultDto> goalResultDtoList = new ArrayList<>();
+    	Integer successCount=0;
+    	int sumPenalty = 0;
+    	if(goal == null) return null;
+    	List<Participant> participantList = participantRepository.findAllByGoal(goal);
+    	
+    	for (Participant participant : participantList) {
+            Member member = participant.getMember();
+            GoalResultDto goalResultDto = GoalResultDto.builder().member(member).build();
+            
+            Integer progressRate = calcProgressRate(member.getMid(), goal);
+            goal.setProgressRate(progressRate);
+            System.out.println("check"+goal.getProgressRate());
+            if(goal.getProgressRate() < 80) { // 진행률이 80퍼가 안되면
+            	float penaltyPercent = (float) ((100-goal.getProgressRate())/100.0);
+            	int penalty = (int) (goal.getPenalty()*penaltyPercent);
+            	sumPenalty+=penalty;
+            	Integer money = penalty * -1;
+            	goalResultDto.setMoney(money);
+            	goalResultDto.setSuccess(false);
+            }
+            else {
+            	goalResultDto.setSuccess(true);
+            	successCount++;
+            }
+            goalResultDtoList.add(goalResultDto);
+        }
+    	Integer money = 0;
+    	if(participantRepository.countAllByGoal(goal) == successCount | sumPenalty==0 | successCount==0) money = goal.getPenalty();
+    	else {
+    	money = sumPenalty/successCount;
+    	}
+    	for (GoalResultDto goalResultDto : goalResultDtoList) {
+    		if(goalResultDto.success)
+    			goalResultDto.setMoney(money);
+		}
+    	return goalResultDtoList;
+    }
+    
+    public boolean checkGoalIsEnd(Long gid) {
+    	Goal goal = goalRepository.findOneByGid(gid);
+    	if(goal.getEndDate().isEqual(LocalDate.now()) ) return true;
+    	return false;
+    }
+    
     private int calcProgressRate(Long mid, Goal goal) {
         int baseCount, doneCount, res;
         int pctId = goal.getProgressCheckType().getPctId().intValue();
