@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.server.doit.domain.dto.GoalAndMaker;
 import com.server.doit.domain.dto.GoalAndMembersDto;
 import com.server.doit.domain.dto.GoalDto;
 import com.server.doit.domain.dto.GoalResultDto;
@@ -128,18 +129,23 @@ public class GoalService {
         return progressCheckTypeRepository.getOne((long) type);
     }
 
-    public List<Goal> getGoalList(Long mid) {
+    public List<GoalAndMaker> getGoalList(Long mid) {
         Member member = memberRepository.getOne(mid);
         List<Participant> participantList = participantRepository.findAllByMember(member);
         List<Goal> goalList = new ArrayList<>();
+        List<GoalAndMaker> goalAndMakerList = new ArrayList<>();
 
         for (Participant participant : participantList) {
             Goal goal = participant.getGoal();
             goal.setProgressRate(calcProgressRate(mid, goal));
-            goalList.add(goal);
+            
+            GoalAndMaker goalAndMaker = GoalAndMaker.builder().goal(goal).build();
+            if(participant.isHost()) goalAndMaker.setHost(true); 
+            else goalAndMaker.setHost(false);
+            goalAndMakerList.add(goalAndMaker);
         }
 
-        return goalList;
+        return goalAndMakerList;
     }
 
   

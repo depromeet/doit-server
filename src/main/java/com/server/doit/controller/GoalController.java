@@ -1,5 +1,6 @@
 package com.server.doit.controller;
 
+import com.server.doit.domain.dto.GoalAndMaker;
 import com.server.doit.domain.dto.GoalAndMembersDto;
 import com.server.doit.domain.dto.GoalDto;
 import com.server.doit.domain.dto.GoalResultDto;
@@ -35,8 +36,8 @@ public class GoalController {
     }
 
     @GetMapping("/api/goals/{mid}")
-    public ResponseEntity<List<Goal>> getGoals(@PathVariable Long mid) {
-        List<Goal> goalList = goalService.getGoalList(mid);
+    public ResponseEntity<List<GoalAndMaker>> getGoals(@PathVariable Long mid) {
+    	List<GoalAndMaker> goalList = goalService.getGoalList(mid);
         if (goalList == null || goalList.size() == 0) return ResponseEntity.badRequest().body(null);
         return ResponseEntity.ok().body(goalList);
     }
