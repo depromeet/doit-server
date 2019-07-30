@@ -95,7 +95,7 @@ public class GoalService {
                         .build())
                 .collect(Collectors.toList());
 
-        memberDtos.forEach(memberDto -> memberDto.setProgressRate(calcProgressRate(memberDto.getMid(), goal)));
+        memberDtos.forEach(memberDto -> memberDto.setProgressRate(calcProgressRate(memberDto.getMid(), goal, false)));
         memberDtos.sort((o1, o2) -> o2.getProgressRate() - o1.getProgressRate());
 
         return GoalAndMembersDto.builder()
@@ -137,7 +137,7 @@ public class GoalService {
 
         for (Participant participant : participantList) {
             Goal goal = participant.getGoal();
-            goal.setProgressRate(calcProgressRate(mid, goal));
+            goal.setProgressRate(calcProgressRate(mid, goal ,false));
             
             GoalAndMaker goalAndMaker = GoalAndMaker.builder().goal(goal).build();
             if(participant.isHost()) goalAndMaker.setHost(true); 
@@ -163,7 +163,7 @@ public class GoalService {
             Member member = participant.getMember();
             GoalResultDto goalResultDto = GoalResultDto.builder().member(member).build();
             
-            Integer progressRate = calcProgressRate(member.getMid(), goal);
+            Integer progressRate = calcProgressRate(member.getMid(), goal, true);
             goal.setProgressRate(progressRate);
             System.out.println("check"+goal.getProgressRate());
             if(goal.getProgressRate() < 80) { // 진행률이 80퍼가 안되면
@@ -198,10 +198,11 @@ public class GoalService {
     	return false;
     }
     
-    private int calcProgressRate(Long mid, Goal goal) {
+    private int calcProgressRate(Long mid, Goal goal,boolean end) {
         int baseCount, doneCount, res;
         int pctId = goal.getProgressCheckType().getPctId().intValue();
         LocalDate today = LocalDate.now();
+        if(end) today = goal.getEndDate();
         LocalDate startDate = goal.getStartDate();
         Member member = memberRepository.getOne(mid);
 
