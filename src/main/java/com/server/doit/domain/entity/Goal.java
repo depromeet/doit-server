@@ -39,6 +39,8 @@ public class Goal {
     private Integer progressCheckCount;
     private Boolean timerCheck;
     private Integer progressRate;
+    @Builder.Default
+    private Integer memberCount=0;
 
     @OneToOne
     @JoinColumn(name = "pctId")
