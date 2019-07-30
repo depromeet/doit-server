@@ -20,7 +20,8 @@ public class GoalDto {
     private Integer progressType;
     private Integer progressCount;
     private Boolean timerCheck;
-    private Integer memberCount;
+    @Builder.Default
+    private Integer memberCount=0;
     private String color;
 
     public GoalDto(String name) {

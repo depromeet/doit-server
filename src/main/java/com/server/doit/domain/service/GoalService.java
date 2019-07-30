@@ -122,6 +122,7 @@ public class GoalService {
                 .progressCheckCount(goalDto.getProgressCount())
                 .themeColor(goalDto.getColor())
                 .timerCheck(goalDto.getTimerCheck())
+                .memberCount(goalDto.getMemberCount())
                 .build();
     }
 
