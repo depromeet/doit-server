@@ -1,6 +1,7 @@
 package com.server.doit.domain.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,9 @@ public class ShootService {
 
         // exceed 계산
         boolean isExceed = false;
-        LocalDate startDate = goal.getStartDate();
+        LocalDate startDate = goal.getStartDate().toLocalDate();
+        System.out.println("check"+startDate);
+        System.out.println(LocalDate.now());
         LocalDate today = LocalDate.now();
         LocalDate date;
 
@@ -90,6 +93,7 @@ public class ShootService {
                 .goal(goal)
                 .shootName(shootDto.getShootName())
                 .date(LocalDate.now())
+                .dateTime(LocalDateTime.now())
                 .maker(member)
                 .likeCount(0)
                 .unLikeCount(0)

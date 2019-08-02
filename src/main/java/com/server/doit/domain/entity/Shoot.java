@@ -1,6 +1,8 @@
 package com.server.doit.domain.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import javax.persistence.*;
@@ -27,6 +29,9 @@ public class Shoot {
 	private String shootName;
 	@JsonIgnore
 	private LocalDate date;
+	
+	@JsonIgnore
+	private LocalDateTime dateTime;
 	private Integer likeCount;
 	private Integer unLikeCount;
 	@ManyToOne
@@ -41,6 +46,10 @@ public class Shoot {
 	private List<ShootConfirm> shootConfirmList;
 	private boolean isExceeded = false;
 
+	@JsonProperty
+    private long epochDateTime() {
+        return dateTime.toEpochSecond(ZoneOffset.UTC);
+    }
 	@JsonProperty
     private long epochDate() {
         return date.toEpochDay();
