@@ -1,7 +1,9 @@
 package com.server.doit.domain.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,9 +33,9 @@ public class Goal {
     private String goalName;
     private String category;
     @JsonIgnore
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @JsonIgnore
-    private LocalDate endDate;
+    private LocalDateTime endDate;
     private String themeColor;
     private Integer penalty;
     private Integer progressCheckCount;
@@ -50,11 +52,11 @@ public class Goal {
 
     @JsonProperty
     private long epochStartDate() {
-        return startDate.toEpochDay();
+        return startDate.toEpochSecond(ZoneOffset.UTC);
     }
 
     @JsonProperty
     private long epochEndDate() {
-        return endDate.toEpochDay();
+        return endDate.toEpochSecond(ZoneOffset.UTC);
     }
 }

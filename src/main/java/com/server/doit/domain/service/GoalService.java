@@ -1,7 +1,9 @@
 package com.server.doit.domain.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -115,8 +117,10 @@ public class GoalService {
         return Goal.builder()
                 .goalName(goalDto.getName())
                 .category(goalDto.getCategory())
-                .startDate(LocalDate.ofEpochDay(goalDto.getStartDate()))
-                .endDate(LocalDate.ofEpochDay(goalDto.getEndDate()))
+                .startDate(LocalDateTime.ofEpochSecond(goalDto.getStartDate(), 0, ZoneOffset.UTC))
+                .endDate(LocalDateTime.ofEpochSecond(goalDto.getEndDate(), 0, ZoneOffset.UTC))
+                //.startDate(LocalDate.ofEpochDay(goalDto.getStartDate()))
+                //.endDate(LocalDate.ofEpochDay(goalDto.getEndDate()))
                 .penalty(goalDto.getPenalty())
                 .progressCheckType(progressCheckType)
                 .progressCheckCount(goalDto.getProgressCount())
@@ -195,7 +199,7 @@ public class GoalService {
     
     public boolean checkGoalIsEnd(Long gid) {
     	Goal goal = goalRepository.findOneByGid(gid);
-    	if(goal.getEndDate().isEqual(LocalDate.now()) | goal.getEndDate().isBefore(LocalDate.now()) ) return true;
+    	if(goal.getEndDate().toLocalDate().isEqual(LocalDate.now()) | goal.getEndDate().toLocalDate().isBefore(LocalDate.now()) ) return true;
     	return false;
     }
     
@@ -203,8 +207,8 @@ public class GoalService {
         int baseCount, doneCount, res;
         int pctId = goal.getProgressCheckType().getPctId().intValue();
         LocalDate today = LocalDate.now();
-        if(end) today = goal.getEndDate();
-        LocalDate startDate = goal.getStartDate();
+        if(end) today = goal.getEndDate().toLocalDate();
+        LocalDate startDate = goal.getStartDate().toLocalDate();
         Member member = memberRepository.getOne(mid);
 
         doneCount = shootRepository.countAllByGoalAndMakerAndIsExceeded(goal, member, false);
@@ -236,7 +240,7 @@ public class GoalService {
 
                 break;
             case 3:
-                baseCount = Period.between(goal.getStartDate(), today).getDays();
+                baseCount = Period.between(goal.getStartDate().toLocalDate(), today).getDays();
                 break;
         }
 

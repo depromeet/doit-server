@@ -1,6 +1,7 @@
 package com.server.doit.domain.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,12 +58,14 @@ public class ShootService {
 
         // exceed 계산
         boolean isExceed = false;
-        LocalDate startDate = goal.getStartDate();
+        LocalDate startDate = goal.getStartDate().toLocalDate();
+        System.out.println("check"+startDate);
+        System.out.println(LocalDate.now());
         LocalDate today = LocalDate.now();
         LocalDate date;
 
         // 하루에 여러번 한 경우
-        if (shootRepository.countAllByMakerAndDateAndIsExceeded(member, today, false) > 0) isExceed = true;
+        if (shootRepository.countAllByGoalAndMakerAndDateAndIsExceeded(goal, member, today, false) > 0) isExceed = true;
 
         if (goal.getProgressCheckType().getPctId() == 1) {
             // 주 N회를 초과한 경우
@@ -71,7 +74,7 @@ public class ShootService {
 
             for (int i = 1; i < days; i++) {
                 date = today.minusDays(i);
-                if (shootRepository.countAllByMakerAndDateAndIsExceeded(member, date, false) > 0) doneCount++;
+                if (shootRepository.countAllByGoalAndMakerAndDateAndIsExceeded(goal, member, date, false) > 0) doneCount++;
             }
 
             if (doneCount >= goal.getProgressCheckCount()) isExceed = true;
@@ -90,6 +93,7 @@ public class ShootService {
                 .goal(goal)
                 .shootName(shootDto.getShootName())
                 .date(LocalDate.now())
+                .dateTime(LocalDateTime.now())
                 .maker(member)
                 .likeCount(0)
                 .unLikeCount(0)
