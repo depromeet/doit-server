@@ -46,12 +46,13 @@ public class Shoot {
 	private List<ShootConfirm> shootConfirmList;
 	private boolean isExceeded = false;
 
-	@JsonProperty
-    private long epochDateTime() {
-        return dateTime.toEpochSecond(ZoneOffset.UTC);
-    }
+	
 	@JsonProperty
     private long epochDate() {
         return date.toEpochDay();
+    }
+	@JsonProperty
+    private long epochDateTime() {
+        return dateTime.toEpochSecond(ZoneOffset.UTC);
     }
 }
