@@ -65,7 +65,7 @@ public class ShootService {
         LocalDate date;
 
         // 하루에 여러번 한 경우
-        if (shootRepository.countAllByMakerAndDateAndIsExceeded(member, today, false) > 0) isExceed = true;
+        if (shootRepository.countAllByGoalAndMakerAndDateAndIsExceeded(goal, member, today, false) > 0) isExceed = true;
 
         if (goal.getProgressCheckType().getPctId() == 1) {
             // 주 N회를 초과한 경우
@@ -74,7 +74,7 @@ public class ShootService {
 
             for (int i = 1; i < days; i++) {
                 date = today.minusDays(i);
-                if (shootRepository.countAllByMakerAndDateAndIsExceeded(member, date, false) > 0) doneCount++;
+                if (shootRepository.countAllByGoalAndMakerAndDateAndIsExceeded(goal, member, date, false) > 0) doneCount++;
             }
 
             if (doneCount >= goal.getProgressCheckCount()) isExceed = true;
